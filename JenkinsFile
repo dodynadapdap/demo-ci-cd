@@ -1,5 +1,5 @@
 def secret = 'general'
-def vmapps = 'dodynadapdap@103.127.136.49'
+def vmapps = 'team2-fe@103.127.136.49'
 def dir    = '/home/team2-fe/literature-frontend'
 def branch = 'main'
 
