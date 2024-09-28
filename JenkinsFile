@@ -1,0 +1,46 @@
+def secret = 'general'
+def vmapps = 'dodynadapdap@103.127.136.49'
+def dir    = '/home/team2-fe/literature-frontend'
+def branch = 'main'
+
+pipeline {
+    agent any 
+    stages {
+        stage('pull') { 
+            steps {
+                sshagent([secret]){
+                    sh """"ssh -o StrictHostKeyChecking=no ${vmaps} << EOF 
+                    cd $(dir)
+                    git pull origin $(branch)
+                    exit
+                    echo "Git Pull Done"
+                    EOF"""
+                }
+            }
+        }
+        stage('build') { 
+            steps {
+                sshagent([secret]){
+                    sh """"ssh -o StrictHostKeyChecking=no ${vmaps} << EOF 
+                    cd $(dir)
+                    npm install
+                    echo "Install Done"
+                    exit
+                    EOF"""
+                }
+            }
+        }
+        stage('run') { 
+            steps {
+                sshagent([secret]){
+                    sh """"ssh -o StrictHostKeyChecking=no ${vmaps} << EOF 
+                    cd $(dir)
+                    pm2 start ecosystem.config.js
+                    echo "application already run"
+                    exit
+                    EOF"""
+                }
+            }
+        }
+    }
+}
