@@ -9,36 +9,42 @@ pipeline {
         stage('pull') { 
             steps {
                 sshagent([secret]){
-                    sh """"ssh -o StrictHostKeyChecking=no ${vmaps} << EOF 
-                    cd $(dir)
-                    git pull origin $(branch)
-                    exit
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${vmapps} << EOF 
+                    cd ${dir}
+                    git pull origin ${branch}
                     echo "Git Pull Done"
-                    EOF"""
+                    exit
+                    EOF
+                    """
                 }
             }
         }
         stage('build') { 
             steps {
                 sshagent([secret]){
-                    sh """"ssh -o StrictHostKeyChecking=no ${vmaps} << EOF 
-                    cd $(dir)
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${vmapps} << EOF 
+                    cd ${dir}
                     npm install
                     echo "Install Done"
                     exit
-                    EOF"""
+                    EOF
+                    """
                 }
             }
         }
         stage('run') { 
             steps {
                 sshagent([secret]){
-                    sh """"ssh -o StrictHostKeyChecking=no ${vmaps} << EOF 
-                    cd $(dir)
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${vmapps} << EOF 
+                    cd ${dir}
                     pm2 start ecosystem.config.js
-                    echo "application already run"
+                    echo "Application is already running"
                     exit
-                    EOF"""
+                    EOF
+                    """
                 }
             }
         }
